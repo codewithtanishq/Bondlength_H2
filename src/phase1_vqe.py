@@ -29,19 +29,20 @@ from qiskit_nature.second_q.circuit.library import UCCSD, HartreeFock
 from qiskit_nature.second_q.algorithms import GroundStateEigensolver
 
 from qiskit_algorithms import VQE, NumPyMinimumEigensolver
-from qiskit_algorithms.optimizers import COBYLA, SPSA
+from qiskit_algorithms.optimizers import COBYLA, SPSA, SLSQP
 from qiskit_algorithms.utils import algorithm_globals
 
 from qiskit.circuit.library import RealAmplitudes
 from qiskit.primitives import Estimator
 
+from config import Phase1Config, RESULTS_DIR, SEED
+
 
 # ── Configuration ─────────────────────────────────────────────────────────────
 
-DISTANCES = np.arange(0.4, 2.0, 0.05)
-BASIS_SET = "sto-3g"
-RESULTS_DIR = "results"
-SEED = 42
+DISTANCES = Phase1Config.DISTANCES
+BASIS_SET = Phase1Config.BASIS
+RESULTS_DIR = str(RESULTS_DIR)
 
 algorithm_globals.random_seed = SEED
 
@@ -83,7 +84,7 @@ def make_vqe_solver(problem, ansatz_name: str = "uccsd", max_iter: int = 500):
             qubit_mapper=mapper,
             initial_state=hf_state,
         )
-        optimizer = COBYLA(maxiter=max_iter)
+        optimizer = SLSQP(maxiter=max_iter)
 
     elif ansatz_name == "real_amplitudes":
         ansatz = RealAmplitudes(n_qubits, reps=2)
@@ -142,8 +143,17 @@ def find_equilibrium(distances, energies):
     spline = UnivariateSpline(distances, energies, k=4, s=0)
     deriv = spline.derivative()
     roots = deriv.roots()
+    if len(roots) == 0:
+        index = int(np.argmin(energies))
+        return float(distances[index]), float(energies[index])
     min_r = roots[np.argmin([spline(r) for r in roots])]
     return float(min_r), float(spline(min_r))
+
+
+def save_metadata(path: str, metadata: dict) -> None:
+    import json
+    with open(path, "w", encoding="utf-8") as handle:
+        json.dump(metadata, handle, indent=2)
 
 
 # ── Plotting ─────────────────────────────────────────────────────────────────

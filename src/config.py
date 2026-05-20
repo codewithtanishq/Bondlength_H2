@@ -25,7 +25,8 @@ SEED = 42  # Fixed seed for reproducible results
 # Distance scan range (Ångströms)
 DISTANCE_MIN = 0.4
 DISTANCE_MAX = 2.0
-DISTANCE_STEP = 0.05  # Phase 0–2 (default scan density)
+DISTANCE_STEP_FINE = 0.02  # Higher-resolution baseline PES
+DISTANCE_STEP_VQE = 0.02   # Finer VQE scan density for more accurate UCCSD results
 DISTANCE_STEP_COARSE = 0.1  # For expensive calculations
 
 # Default basis set
@@ -146,10 +147,10 @@ EXPERIMENTAL_DATA = {
 
 # ── Utility: Compute distance arrays ─────────────────────────────────────────────
 
-def get_distance_array(step: float = DISTANCE_STEP) -> np.ndarray:
+def get_distance_array(step: float) -> np.ndarray:
     """Return distance array from MIN to MAX with given step."""
     return np.arange(DISTANCE_MIN, DISTANCE_MAX + step / 2, step)
 
-Phase0Config.DISTANCES = get_distance_array()
-Phase1Config.DISTANCES = get_distance_array()
-Phase3Config.DISTANCES_H2 = get_distance_array()
+Phase0Config.DISTANCES = get_distance_array(DISTANCE_STEP_FINE)
+Phase1Config.DISTANCES = get_distance_array(DISTANCE_STEP_VQE)
+Phase3Config.DISTANCES_H2 = get_distance_array(DISTANCE_STEP_FINE)

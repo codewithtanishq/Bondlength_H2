@@ -22,12 +22,14 @@ from qiskit_nature.second_q.mappers import JordanWignerMapper
 from qiskit_nature.second_q.algorithms import GroundStateEigensolver
 from qiskit_algorithms import NumPyMinimumEigensolver
 
+from config import Phase0Config, RESULTS_DIR
+
 
 # ── Configuration ───────────────────────────────────────────────────────────
 
-DISTANCES = np.arange(0.4, 2.0, 0.05)
-BASIS_SET = "sto-3g"
-RESULTS_DIR = "results"
+DISTANCES = Phase0Config.DISTANCES
+BASIS_SET = Phase0Config.BASIS
+RESULTS_DIR = str(RESULTS_DIR)
 
 
 # ── Core simulation ──────────────────────────────────────────────────────────
@@ -69,8 +71,18 @@ def find_equilibrium(distances: np.ndarray, energies: list[float]) -> tuple[floa
     spline = UnivariateSpline(distances, energies, k=4, s=0)
     deriv = spline.derivative()
     roots = deriv.roots()
+    if len(roots) == 0:
+        index = int(np.argmin(energies))
+        return float(distances[index]), float(energies[index])
     min_root = roots[np.argmin([spline(r) for r in roots])]
     return float(min_root), float(spline(min_root))
+
+
+def save_metadata(path: str, metadata: dict) -> None:
+    """Save a JSON metadata file next to generated results."""
+    import json
+    with open(path, "w", encoding="utf-8") as handle:
+        json.dump(metadata, handle, indent=2)
 
 
 # ── Plotting ──────────────────────────────────────────────────────────────────
