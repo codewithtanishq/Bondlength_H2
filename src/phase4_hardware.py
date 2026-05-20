@@ -32,8 +32,9 @@ from qiskit.circuit.library import RealAmplitudes
 from qiskit.primitives import Estimator
 from qiskit_ibm_runtime import QiskitRuntimeService, Session, Estimator as IBMEstimator
 
-RESULTS_DIR = "results"
-SEED = 42
+from config import Phase4Config, RESULTS_DIR, SEED
+
+RESULTS_DIR = str(RESULTS_DIR)
 algorithm_globals.random_seed = SEED
 
 
@@ -49,7 +50,7 @@ def build_problem(distance: float, basis: str = "sto-3g"):
     return driver.run()
 
 
-def build_vqe(problem, ansatz_name="uccsd", max_iter=300):
+def build_vqe(problem, ansatz_name="uccsd", max_iter=300, estimator=None):
     mapper = JordanWignerMapper()
     particle_number = problem.num_particles
     num_spatial_orbitals = problem.num_spatial_orbitals
@@ -59,14 +60,22 @@ def build_vqe(problem, ansatz_name="uccsd", max_iter=300):
         num_particles=particle_number,
         qubit_mapper=mapper,
     )
-    ansatz = UCCSD(
-        num_spatial_orbitals=num_spatial_orbitals,
-        num_particles=particle_number,
-        qubit_mapper=mapper,
-        initial_state=hf_state,
-    )
-    estimator = Estimator()
-    vqe = VQE(estimator=estimator, ansatz=ansatz, optimizer=COBYLA(maxiter=max_iter))
+
+    if ansatz_name == "uccsd":
+        ansatz = UCCSD(
+            num_spatial_orbitals=num_spatial_orbitals,
+            num_particles=particle_number,
+            qubit_mapper=mapper,
+            initial_state=hf_state,
+        )
+    else:
+        ansatz = RealAmplitudes(num_qubits=2 * num_spatial_orbitals, reps=2)
+
+    if estimator is None:
+        estimator = Estimator()
+
+    vqe = VQE(estimator=estimator, ansatz=ansatz,
+              optimizer=COBYLA(maxiter=max_iter))
     return GroundStateEigensolver(mapper, vqe)
 
 
@@ -98,27 +107,9 @@ def run_ibm_backend(distance, backend_name, ansatz, max_iter, shots=1024):
         raise RuntimeError("IBM Quantum credentials are not configured") from exc
 
     problem = build_problem(distance)
-    mapper = JordanWignerMapper()
-    particle_number = problem.num_particles
-    num_spatial_orbitals = problem.num_spatial_orbitals
-
-    hf_state = HartreeFock(
-        num_spatial_orbitals=num_spatial_orbitals,
-        num_particles=particle_number,
-        qubit_mapper=mapper,
-    )
-    ansatz = UCCSD(
-        num_spatial_orbitals=num_spatial_orbitals,
-        num_particles=particle_number,
-        qubit_mapper=mapper,
-        initial_state=hf_state,
-    )
-
     with Session(service=service, backend=backend_name) as session:
         estimator = IBMEstimator(session=session, options={"shots": shots})
-        vqe = VQE(estimator=estimator, ansatz=ansatz,
-                  optimizer=COBYLA(maxiter=max_iter))
-        solver = GroundStateEigensolver(mapper, vqe)
+        solver = build_vqe(problem, ansatz_name=ansatz, max_iter=max_iter, estimator=estimator)
         result = solver.solve(problem)
     return result.total_energies[0].real
 
