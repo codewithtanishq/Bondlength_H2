@@ -144,11 +144,13 @@ dmypy.json
 ehthumbs.db
 Thumbs.db
 
-# Results and data
-results/
-*.csv
-*.png
-*.pdf
+# Results and data - Allow tracking results but not cache files
+results/**/*.tmp
+results/**/*.cache
+*.csv.bak
+*.png.bak
+*.pdf.bak
+__results__/
 
 # Logs
 *.log
