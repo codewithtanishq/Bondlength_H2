@@ -1,0 +1,53 @@
+# Auto detect text files and normalize line endings to LF
+* text=auto
+
+# Python files
+*.py text eol=lf diff=python
+*.pyw text eol=lf diff=python
+
+# Jupyter notebooks
+*.ipynb text eol=lf diff=jupyter
+
+# Markdown files
+*.md text eol=lf diff=markdown
+*.markdown text eol=lf diff=markdown
+
+# Documentation
+*.txt text eol=lf
+*.rst text eol=lf
+
+# Data files
+*.csv text eol=lf
+*.json text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.xml text eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Batch files
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.pkl binary
+*.pickle binary
+*.npy binary
+*.npz binary
+
+# Graphics
+*.ai binary
+*.psd binary
+*.svg text eol=lf
+
+# Git config
+.gitignore text eol=lf
+.gitattributes text eol=lf
