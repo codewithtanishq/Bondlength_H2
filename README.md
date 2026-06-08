@@ -24,12 +24,6 @@ A comprehensive educational project exploring quantum computing's potential for 
 
 This project investigates the potential energy surface (PES) of the hydrogen molecule (H₂) using both classical computational chemistry and quantum computing approaches. By comparing classical and quantum methods, it demonstrates how quantum computers can simulate molecular behavior and provides insight into the advantages and current limitations of quantum algorithms in chemistry.
 
-### Why H₂?
-The hydrogen molecule is ideal for quantum computing research because:
-- It's the simplest multi-electron molecule
-- Its solution has been well-studied experimentally and theoretically
-- It requires only 4 qubits for minimal basis sets
-- It serves as a benchmark for quantum algorithm development
 
 ## ⭐ Key Features
 
@@ -41,51 +35,7 @@ The hydrogen molecule is ideal for quantum computing research because:
 - **Reproducible Results**: Fixed random seed (SEED = 42) for consistent outputs
 - **Comprehensive Documentation**: Educational explanations and inline code comments
 
-## 💻 System Requirements
 
-- **OS**: Linux, macOS, or Windows (with WSL2 recommended for Windows)
-- **Python**: 3.10 or higher
-- **RAM**: Minimum 4 GB (8 GB recommended)
-- **Disk Space**: ~500 MB (including dependencies)
-
-## 📦 Installation
-
-### 1. Clone the Repository
-```bash
-git clone https://github.com/yourusername/quantum-h2-pes.git
-cd quantum-h2-pes
-```
-
-### 2. Create Virtual Environment
-
-**On Linux/macOS:**
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-**On Windows (Command Prompt):**
-```bash
-python -m venv venv
-venv\Scripts\activate
-```
-
-**On Windows (PowerShell):**
-```bash
-python -m venv venv
-venv\Scripts\Activate.ps1
-```
-
-### 3. Install Dependencies
-```bash
-pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-### 4. Verify Installation
-```bash
-python -c "import qiskit; print('Qiskit version:', qiskit.__version__)"
-```
 
 ## 🚀 Quick Start
 
@@ -257,22 +207,7 @@ Contributions are welcome! This is an educational project, and we appreciate:
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
-### Development Setup
-```bash
-git clone <your-fork>
-cd quantum-h2-pes
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-# Make your changes
-git commit -m "feat: description of changes"
-git push origin feature/your-feature
-# Create Pull Request on GitHub
-```
 
-## 📄 License
-
-This project is licensed under the **MIT License** - see [LICENSE](LICENSE) file for details.
 
 ## 📚 References
 
@@ -281,54 +216,7 @@ This project is licensed under the **MIT License** - see [LICENSE](LICENSE) file
 - Cerezo, M., et al. (2021). Variational quantum algorithms. *Nature Reviews Physics*, 3, 625-644.
 - O'Malley, P. J. J., et al. (2016). Scalable Quantum Simulation of Molecular Energies. *Physical Review X*, 6, 031007.
 
-### Learning Resources
-- [Qiskit Documentation](https://qiskit.org/documentation/)
-- [IBM Quantum Learning](https://learning.quantum.ibm.com/)
-- [Variational Quantum Eigensolver (VQE) Tutorial](https://qiskit.org/textbook/ch-applications/vqe-molecules.html)
-- [PySCF Documentation](https://pyscf.org/)
 
-## ❓ Troubleshooting
-
-### Issue: "ModuleNotFoundError: No module named 'qiskit'"
-**Solution**: Ensure virtual environment is activated and dependencies are installed:
-```bash
-source venv/bin/activate
-pip install -r requirements.txt
-```
-
-### Issue: "Connection error to IBM Quantum" (in Phase 1)
-**Solution**: This is normal if not configured. The code uses local simulator by default.
-
-### Issue: Out of memory errors
-**Solution**: Try running phases individually rather than the full demo:
-```bash
-python src/phase0_baseline.py    # Low memory
-python src/phase1_vqe.py         # Moderate memory (try first)
-```
-
-### Issue: Plots not saving correctly
-**Solution**: Ensure `results/` directory exists and is writable:
-```bash
-mkdir -p results
-chmod 755 results
-```
-
-## 📞 Support & Questions
-
-- **Issues**: Open an issue on GitHub
-- **Discussions**: Use GitHub Discussions for questions
-- **Email**: Contact project maintainers
-
-## 🎓 Educational Use
-
-This project is designed for educational purposes in quantum computing and computational chemistry. It's suitable for:
-- University quantum computing courses
-- Self-study and learning quantum algorithms
-- Quantum computing research prototyping
-- Physics and chemistry education
-
----
 
 **Last Updated**: June 2026  
-**Version**: 1.0.0  
-**Status**: Production Ready ✅
+
